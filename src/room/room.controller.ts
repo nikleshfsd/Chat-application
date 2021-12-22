@@ -10,7 +10,6 @@ export class RoomController {
   @Post('create')
   @Render('chat')
   async create(@Body() createRoomDto: CreateRoomDto) {
-    const roomData = this.service.create(createRoomDto);
-    return roomData;
+    return this.service.create(createRoomDto);
   }
 }

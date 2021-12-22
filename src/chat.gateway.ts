@@ -46,7 +46,7 @@ export class ChatGateway {
       .to(room.name)
       .emit(
         'message',
-        formatMessage(user.userName, `${user.userName} has left the chat.`),
+        formatMessage(user.name, `${user.name} has left the chat.`),
       );
     console.log(`Client disconnected: ${client.id}`);
   }
@@ -73,8 +73,8 @@ export class ChatGateway {
     client.emit(
       'message',
       formatMessage(
-        user.userName,
-        `Welcome ${user.userName} in PYPESTREAM chat.`,
+        user.name,
+        `Welcome ${user.name} in PYPESTREAM chat.`,
       ),
     );
 
@@ -82,34 +82,34 @@ export class ChatGateway {
       .to(room.name)
       .emit(
         'message',
-        formatMessage(user.userName, `${user.userName} Joined.`),
+        formatMessage(user.name, `${user.name} Joined.`),
       );
   }
 
   @SubscribeMessage('chatMsgText')
-  async chatMsgText(client: Socket, data) {
+  async chatMsgText(client: Socket, message) {
     try {
-      const roomchat = await this.roomModel.findOne({ _id: data.roomId });
+      const roomchat = await this.roomModel.findOne({ _id: message.roomId });
       const user = roomchat.connectedUser.find(
-        (element) => element.userId === data.userId,
+        (element) => element.userId === message.userId,
       );
       //store chat message
       const room = await this.roomModel.findOneAndUpdate(
-        { _id: data.roomId },
+        { _id: message.roomId },
         {
           $push: {
-            Message: {
+            messages: {
               userId: user.userId,
-              message: data.msgText,
-              time: new Date().toString(),
+              content: message.msgText,
+              createdAt: new Date(),
             },
           },
         },
       );
-      // console.log(`room data `, user.userName);
+      // console.log(`room data `, user.name);
       this.server
         .to(room.name)
-        .emit('message', formatMessage(user.userName, data.msgText));
+        .emit('message', formatMessage(user.name, message.msgText));
     } catch (err) {
       console.log(err);
     }
@@ -140,22 +140,22 @@ export class ChatGateway {
         .emit(
           'message',
           formatMessage(
-            userLeft[0].userName,
-            `${userLeft[0].userName} has left the chat.`,
+            userLeft[0].name,
+            `${userLeft[0].name} has left the chat.`,
           ),
         );
       client.emit('redirect', '/');
     } catch (err) {}
   }
 }
-const formatMessage = (userName, textMsg) => {
+const formatMessage = (name, textMsg) => {
   const date = new Date();
   const hrs = date.getHours();
   const minutes = date.getMinutes();
   const ampm = hrs >= 12 ? 'PM' : 'AM';
   const time = `${hrs}:${minutes} ${ampm}`;
   return {
-    userName,
+    name,
     textMsg,
     time,
   };

@@ -3,6 +3,12 @@ import { Document } from 'mongoose';
 
 export type RoomDocument = Room & Document;
 
+class Message {
+  content: string;
+  createdAt: Date;
+  userId: string;
+}
+
 @Schema()
 export class Room {
   @Prop({ required: true, unique: true })
@@ -12,12 +18,13 @@ export class Room {
   connectedUser: [
     {
       userId: string;
-      userName: string;
+      name: string;
+      socketId: string;
     },
   ];
 
   @Prop()
-  Message: [];
+  messages: Message[];
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room).set('timestamps', {
