@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>Pypestream Chat Room</title>
+</head>
+
+<body>
+  <input type="hidden" id="roomId" name="roomId" value="{{roomId}}">
+  <input type="hidden" id="userId" name="userId" value="{{userId}}">
+  <div class="chat-container">
+    <header class="chat-header">
+      <h1><i class="fas fa-smile"></i> Chat Room</h1>
+      <a id="leaveChat" class="btn">Leave Room</a>
+    </header>
+    <main class="chat-main">
+      <div id="chat-window"></div>
+    </main>
+    <div class="chat-form-container">
+      <form id="chat-msg-form">
+        <input type="text" id="message" name="message" value="" placeholder="Enter message" required />
+        <button class="btn" type="submit" value="submit">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+    integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.socket.io/4.0.2/socket.io.js"></script>
+</body>
+
+</html>
+
+
+<script>
+  const getElement = (id) => document.getElementById(id);
+  const roomId = getElement('roomId').value;
+  const userId = getElement('userId').value;
+  const chatMsgForm = document.getElementById('chat-msg-form');
+
+  const socket = io("http://localhost:3000");
+  const message = document.getElementById('message');
+  socket.on('message', (message) => {
+    formatDomMessage(message);
+  });
+
+  // Send text message
+  chatMsgForm.addEventListener('submit', (event) => {
+    // Prevent from to submit
+    event.preventDefault();
+
+    const msgText = event.target.elements.message.value;
+    socket.emit('chatMsgText', { userId, roomId, msgText });
+
+    // Empty message field
+    event.target.elements.message.value = '';
+    event.target.elements.message.focus();
+  });
+
+  // Emit for join room
+  socket.emit('joinRoom', { userId, roomId });
+
+  // Emit for left room
+  // document.getElementById("leaveChat").addEventListener("click", ()=>{
+  document.addEventListener('DOMContentLoaded', () => {
+    socket.emit('leaveRoom', { userId, roomId });
+    document.getElementById('leaveChat').onclick = () => {
+      alert();
+    };
+    // });
+  });
+
+  // Redirect user on entry form
+  socket.on('redirect', function (destination) {
+    console.log(`hi`);
+    window.location.href = destination;
+  });
+
+  // Format DOM message for render HTML
+  function formatDomMessage(message) {
+    const div = document.createElement('div');
+    div.classList.add('receivedMessage');
+    div.innerHTML = `<p>${message.userName} <br> ${message.textMsg}<br><span>${message.time}</span></p>`;
+    document.querySelector('#chat-window').appendChild(div);
+  }
+</script>
