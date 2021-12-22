@@ -62,9 +62,7 @@
   socket.emit('joinRoom', { userId, roomId });
 
   // Emit for left room
-  // document.getElementById("leaveChat").addEventListener("click", ()=>{
   document.addEventListener('DOMContentLoaded', () => {
-    //socket.emit('leaveRoom', { userid, roomid });
 
     document.getElementById('leaveChat').onclick = () => {
       socket.emit('leaveRoomByInterface', { userId, roomId });
@@ -74,7 +72,6 @@
 
   // Redirect user on entry form
   socket.on('redirect', function (destination) {
-    console.log(`hi`);
     window.location.href = destination;
   });
 

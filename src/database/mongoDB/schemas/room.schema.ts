@@ -15,7 +15,7 @@ export class Room {
   name: string;
 
   @Prop()
-  connectedUser: [
+  connectedUsers: [
     {
       userId: string;
       name: string;

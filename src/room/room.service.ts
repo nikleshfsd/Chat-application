@@ -25,17 +25,17 @@ export class RoomService {
       console.log('created');
       const roomSchema = new Room();
       roomSchema.name = createRoomDto.name;
-      roomSchema.connectedUser = [{ name: userName, userId, socketId: null }];
+      roomSchema.connectedUsers = [{ name: userName, userId, socketId: null }];
       const { _id: roomId } = await this.roomModel.create(roomSchema);
       return { roomId, userId };
     } else {
       console.log('updated');
-      const connectedUser = [
+      const connectedUsers = [
         { userName: userName, userId, socketId: null },
       ];
       const { _id: roomId } = await this.roomModel.findOneAndUpdate(
         { name: createRoomDto.name },
-        { $push: { connectedUser: connectedUser } },
+        { $push: { connectedUsers: connectedUsers } },
       );
       return { roomId, userId };
     }

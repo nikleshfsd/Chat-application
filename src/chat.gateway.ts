@@ -28,7 +28,7 @@ export class ChatGateway {
     const roomUserToBeDelete = await this.roomModel.findOne({
       'room.connectedUser.socketId ': socketId,
     });
-    const user = roomUserToBeDelete.connectedUser.find(
+    const user = roomUserToBeDelete.connectedUsers.find(
       (element) => element.socketId === socketId,
     );
     const room = await this.roomModel.findOneAndUpdate(
@@ -59,7 +59,7 @@ export class ChatGateway {
   async joinRoom(client: Socket, data) {
     console.log(client.id);
     const room = await this.roomModel.findOne({ _id: data.roomId });
-    const user = room.connectedUser.find(
+    const user = room.connectedUsers.find(
       (element) => element.userId === data.userId,
     );
     user.socketId = client.id;
@@ -90,7 +90,7 @@ export class ChatGateway {
   async chatMsgText(client: Socket, message) {
     try {
       const roomchat = await this.roomModel.findOne({ _id: message.roomId });
-      const user = roomchat.connectedUser.find(
+      const user = roomchat.connectedUsers.find(
         (element) => element.userId === message.userId,
       );
       //store chat message
@@ -119,17 +119,13 @@ export class ChatGateway {
   async leaveRoomByInterface(client: Socket, data) {
     try {
       const room = await this.roomModel.findOne({ _id: data.roomId });
-      const connectedUser = room.connectedUser;
+      const connectedUser = room.connectedUsers;
 
       const userIndex = connectedUser.findIndex(
         (element) => element.userId === data.userId,
       );
-      const userLeft = room.connectedUser.splice(userIndex, 1);
-
-      console.log(`this is not conuser`, connectedUser);
-      console.log(`updated user`, room);
-
-      const roomChat = await this.roomModel.findOneAndUpdate(
+      const userLeft = room.connectedUsers.splice(userIndex, 1);
+      await this.roomModel.findOneAndUpdate(
         { _id: data.roomId },
         room,
       );
