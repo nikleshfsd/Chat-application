@@ -23,7 +23,33 @@ export class ChatGateway {
   afterInit(server: any) {
     console.log('Initialize ChatGateway!');
   }
+  async handleDisconnect(client: Socket, data) {
+    const socketId = client.id;
+    const roomUserToBeDelete = await this.roomModel.findOne({
+      'room.connectedUser.socketId ': socketId,
+    });
+    const user = roomUserToBeDelete.connectedUser.find(
+      (element) => element.socketId === socketId,
+    );
+    const room = await this.roomModel.findOneAndUpdate(
+      { 'room.connectedUser.socketId ': socketId },
+      {
+        $pull: {
+          connectedUser: {
+            socketId: socketId,
+          },
+        },
+      },
+    );
 
+    this.server
+      .to(room.name)
+      .emit(
+        'message',
+        formatMessage(user.userName, `${user.userName} has left the chat.`),
+      );
+    console.log(`Client disconnected: ${client.id}`);
+  }
   @SubscribeMessage('message')
   handleMessage(@MessageBody() message: string): void {
     this.server.emit('message', message);
@@ -31,10 +57,18 @@ export class ChatGateway {
 
   @SubscribeMessage('joinRoom')
   async joinRoom(client: Socket, data) {
+    console.log(client.id);
     const room = await this.roomModel.findOne({ _id: data.roomId });
     const user = room.connectedUser.find(
       (element) => element.userId === data.userId,
     );
+    user.socketId = client.id;
+
+    const roomChat = await this.roomModel.findOneAndUpdate(
+      { _id: data.roomId },
+      room,
+    );
+
     client.join(room.name);
     client.emit(
       'message',
@@ -79,37 +113,6 @@ export class ChatGateway {
     } catch (err) {
       console.log(err);
     }
-  }
-  @SubscribeMessage('leaveRoom')
-  async leaveRoom(client: Socket, data) {
-    try {
-      const room = await this.roomModel.findOne({ _id: data.roomId });
-      const connectedUser = room.connectedUser;
-
-      const userIndex = connectedUser.findIndex(
-        (element) => element.userId === data.userId,
-      );
-      const userLeft = room.connectedUser.splice(userIndex, 1);
-
-      client.on('disconnect', async () => {
-        const roomChat = await this.roomModel.findOneAndUpdate(
-          { _id: data.roomId },
-          room,
-        );
-
-        client.leave(room.name);
-
-        this.server
-          .to(room.name)
-          .emit(
-            'message',
-            formatMessage(
-              userLeft[0].userName,
-              `${userLeft[0].userName} has left the chat.`,
-            ),
-          );
-      });
-    } catch (err) {}
   }
 
   @SubscribeMessage('leaveRoomByInterface')
