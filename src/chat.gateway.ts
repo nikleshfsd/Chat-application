@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { Room } from './database/mongoDB/schemas/room.schema';
 import { Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
+import { utc } from 'moment';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
@@ -20,8 +21,8 @@ export class ChatGateway {
 
   private logger: Logger = new Logger('ChatGateway');
 
-  afterInit(server: any) {
-    console.log('Initialize ChatGateway!');
+  afterInit(server) {
+    this.logger.log('Initialize ChatGateway!');
   }
   async handleDisconnect(client: Socket, data) {
     const socketId = client.id;
@@ -72,18 +73,12 @@ export class ChatGateway {
     client.join(room.name);
     client.emit(
       'message',
-      formatMessage(
-        user.name,
-        `Welcome ${user.name} in PYPESTREAM chat.`,
-      ),
+      formatMessage(user.name, `Welcome ${user.name} in PYPESTREAM chat.`),
     );
 
     client
       .to(room.name)
-      .emit(
-        'message',
-        formatMessage(user.name, `${user.name} Joined.`),
-      );
+      .emit('message', formatMessage(user.name, `${user.name} Joined.`));
   }
 
   @SubscribeMessage('chatMsgText')
@@ -125,10 +120,7 @@ export class ChatGateway {
         (element) => element.userId === data.userId,
       );
       const userLeft = room.connectedUsers.splice(userIndex, 1);
-      await this.roomModel.findOneAndUpdate(
-        { _id: data.roomId },
-        room,
-      );
+      await this.roomModel.findOneAndUpdate({ _id: data.roomId }, room);
       client.leave(room.name);
 
       this.server
@@ -144,15 +136,11 @@ export class ChatGateway {
     } catch (err) {}
   }
 }
-const formatMessage = (name, textMsg) => {
-  const date = new Date();
-  const hrs = date.getHours();
-  const minutes = date.getMinutes();
-  const ampm = hrs >= 12 ? 'PM' : 'AM';
-  const time = `${hrs}:${minutes} ${ampm}`;
+const formatMessage = (name, content) => {
+  const createdAt = utc().toDate();
   return {
     name,
-    textMsg,
-    time,
+    content,
+    createdAt,
   };
 };

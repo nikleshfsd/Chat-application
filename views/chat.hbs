@@ -25,6 +25,7 @@
     </div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
     integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4=" crossorigin="anonymous"></script>
   <script src="https://cdn.socket.io/4.0.2/socket.io.js"></script>
@@ -79,7 +80,7 @@
   function formatDomMessage(message) {
     const div = document.createElement('div');
     div.classList.add('receivedMessage');
-    div.innerHTML = `<p>${message.userName} <br> ${message.textMsg}<br><span>${message.time}</span></p>`;
+    div.innerHTML = `<p>${message.name} <br> ${message.content}<br><span>${moment.utc(message.createdAt)..format("hh:mm A")}</span></p>`;
     document.querySelector('#chat-window').appendChild(div);
   }
 </script>
