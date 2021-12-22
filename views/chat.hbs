@@ -64,9 +64,10 @@
   // Emit for left room
   // document.getElementById("leaveChat").addEventListener("click", ()=>{
   document.addEventListener('DOMContentLoaded', () => {
-    socket.emit('leaveRoom', { userId, roomId });
+    //socket.emit('leaveRoom', { userid, roomid });
+
     document.getElementById('leaveChat').onclick = () => {
-      alert();
+      socket.emit('leaveRoomByInterface', { userId, roomId });
     };
     // });
   });

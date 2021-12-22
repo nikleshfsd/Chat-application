@@ -91,16 +91,11 @@ export class ChatGateway {
       );
       const userLeft = room.connectedUser.splice(userIndex, 1);
 
-      console.log(data.userId);
-      console.log(userLeft);
-
       client.on('disconnect', async () => {
-        console.log(`this is not conuser`,connectedUser);
-
-        // const room = await this.roomModel.findOneAndUpdate(
-        //   { _id: data.roomId },
-        //   { connectedUser: connectedUser },
-        // );
+        const roomChat = await this.roomModel.findOneAndUpdate(
+          { _id: data.roomId },
+          room,
+        );
 
         client.leave(room.name);
 
@@ -114,6 +109,39 @@ export class ChatGateway {
             ),
           );
       });
+    } catch (err) {}
+  }
+
+  @SubscribeMessage('leaveRoomByInterface')
+  async leaveRoomByInterface(client: Socket, data) {
+    try {
+      const room = await this.roomModel.findOne({ _id: data.roomId });
+      const connectedUser = room.connectedUser;
+
+      const userIndex = connectedUser.findIndex(
+        (element) => element.userId === data.userId,
+      );
+      const userLeft = room.connectedUser.splice(userIndex, 1);
+
+      console.log(`this is not conuser`, connectedUser);
+      console.log(`updated user`, room);
+
+      const roomChat = await this.roomModel.findOneAndUpdate(
+        { _id: data.roomId },
+        room,
+      );
+      client.leave(room.name);
+
+      this.server
+        .to(room.name)
+        .emit(
+          'message',
+          formatMessage(
+            userLeft[0].userName,
+            `${userLeft[0].userName} has left the chat.`,
+          ),
+        );
+      client.emit('redirect', '/');
     } catch (err) {}
   }
 }
