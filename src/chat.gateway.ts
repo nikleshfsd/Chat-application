@@ -9,7 +9,11 @@ import { Room } from './database/mongoDB/schemas/room.schema';
 import { Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { formatMessage } from './utils';
-import { ChatToServerPayload, JoinRoomPayload } from './types';
+import {
+  ChatToServerPayload,
+  JoinRoomPayload,
+  LeaveRoomPayload,
+} from './types';
 import { utc } from 'moment';
 
 @WebSocketGateway({ cors: true })
@@ -36,7 +40,7 @@ export class ChatGateway {
     if (!room) return;
 
     const user = room.connectedUsers.find(
-      (element) => element.socketId === socketId,
+      (connectedUser) => connectedUser.socketId === socketId,
     );
 
     if (!user) return;
@@ -68,7 +72,7 @@ export class ChatGateway {
     if (!room) return;
 
     const user = room.connectedUsers.find(
-      (user) => user.userId === payload.userId,
+      (connectedUser) => connectedUser.userId === payload.userId,
     );
 
     // when the given user id does not exists.
@@ -94,7 +98,7 @@ export class ChatGateway {
     try {
       const roomchat = await this.roomModel.findOne({ _id: payload.roomId });
       const user = roomchat.connectedUsers.find(
-        (user) => user.userId === payload.userId,
+        (connectedUser) => connectedUser.userId === payload.userId,
       );
 
       const room = await this.roomModel.findOneAndUpdate(
@@ -122,15 +126,15 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('leaveRoom')
-  async leaveRoom(client: Socket, data) {
+  async leaveRoom(client: Socket, payload: LeaveRoomPayload) {
     try {
-      const room = await this.roomModel.findOne({ _id: data.roomId });
+      const room = await this.roomModel.findOne({ _id: payload.roomId });
       const userIndex = room.connectedUsers.findIndex(
-        (connectedUser) => connectedUser.userId === data.userId,
+        (connectedUser) => connectedUser.userId === payload.userId,
       );
 
       const [userLeft] = room.connectedUsers.splice(userIndex, 1);
-      await this.roomModel.findOneAndUpdate({ _id: data.roomId }, room);
+      await this.roomModel.findOneAndUpdate({ _id: payload.roomId }, room);
       client.leave(room.name);
 
       this.server

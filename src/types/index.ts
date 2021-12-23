@@ -5,6 +5,8 @@ interface BasePayload {
 
 export interface JoinRoomPayload extends BasePayload {}
 
+export interface LeaveRoomPayload extends BasePayload {}
+
 export interface ChatToServerPayload extends BasePayload {
   message: string;
 }
