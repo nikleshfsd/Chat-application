@@ -209,7 +209,7 @@
 			<h1><i class="fas fa-smile"></i> Chat</h1>
 		</header>
 		<main class="join-main">
-			<form action="room/create" method="POST">
+			<form action="chat-room/join" method="POST">
 				<div class="form-control">
 					<label for="username">Username</label>
 					<input type="text" name="connectedUser" id="connectedUser" placeholder="Enter username..."
@@ -217,9 +217,9 @@
 				</div>
 				<div class="form-control">
 					<label for="room">Room</label>
-					<input type="text" name="name" id="name">
+					<input type="text" name="name" id="name" required>
 				</div>
-				<button type="submit" class="btn">Join Chat</button>
+				<button type="submit" class="btn">Join Room</button>
 			</form>
 		</main>
 	</div>

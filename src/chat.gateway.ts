@@ -9,30 +9,38 @@ import { Model } from 'mongoose';
 import { Room } from './database/mongoDB/schemas/room.schema';
 import { Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
-import { utc } from 'moment';
+import { formatMessage } from './utils';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
-  constructor(
-    @InjectModel(Room.name) private readonly roomModel: Model<Room>,
-  ) {}
   @WebSocketServer()
   server;
 
-  private logger: Logger = new Logger('ChatGateway');
+  private logger: Logger = new Logger(ChatGateway.name);
 
-  afterInit(server) {
+  constructor(
+    @InjectModel(Room.name) private readonly roomModel: Model<Room>,
+  ) {}
+
+  afterInit() {
     this.logger.log('Initialize ChatGateway!');
   }
-  async handleDisconnect(client: Socket, data) {
+
+  async handleDisconnect(client: Socket) {
     const socketId = client.id;
-    const roomUserToBeDelete = await this.roomModel.findOne({
+    const room = await this.roomModel.findOne({
       'room.connectedUser.socketId ': socketId,
     });
-    const user = roomUserToBeDelete.connectedUsers.find(
+
+    const user = room.connectedUsers.find(
       (element) => element.socketId === socketId,
     );
-    const room = await this.roomModel.findOneAndUpdate(
+
+    if (!user || !room) {
+      return;
+    }
+
+    await this.roomModel.findOneAndUpdate(
       { 'room.connectedUser.socketId ': socketId },
       {
         $pull: {
@@ -49,28 +57,22 @@ export class ChatGateway {
         'message',
         formatMessage(user.name, `${user.name} has left the chat.`),
       );
-    console.log(`Client disconnected: ${client.id}`);
-  }
-  @SubscribeMessage('message')
-  handleMessage(@MessageBody() message: string): void {
-    this.server.emit('message', message);
   }
 
   @SubscribeMessage('joinRoom')
-  async joinRoom(client: Socket, data) {
-    console.log(client.id);
-    const room = await this.roomModel.findOne({ _id: data.roomId });
-    const user = room.connectedUsers.find(
-      (element) => element.userId === data.userId,
-    );
-    user.socketId = client.id;
+  async joinRoom(client: Socket, { userId, roomId }) {
+    const room = await this.roomModel.findOne({ _id: roomId });
 
-    const roomChat = await this.roomModel.findOneAndUpdate(
-      { _id: data.roomId },
-      room,
-    );
+    if (!room) return;
+
+    const user = room.connectedUsers.find((user) => user.userId === userId);
+    if (!user) return;
+
+    user.socketId = client.id;
+    await this.roomModel.findOneAndUpdate({ _id: roomId }, room);
 
     client.join(room.name);
+
     client.emit(
       'message',
       formatMessage(user.name, `Welcome ${user.name} in PYPESTREAM chat.`),
@@ -81,45 +83,48 @@ export class ChatGateway {
       .emit('message', formatMessage(user.name, `${user.name} Joined.`));
   }
 
-  @SubscribeMessage('chatMsgText')
-  async chatMsgText(client: Socket, message) {
+  @SubscribeMessage('chatToServer')
+  async chatToServer(_: Socket, payload) {
     try {
-      const roomchat = await this.roomModel.findOne({ _id: message.roomId });
+      const roomchat = await this.roomModel.findOne({ _id: payload.roomId });
       const user = roomchat.connectedUsers.find(
-        (element) => element.userId === message.userId,
+        (user) => user.userId === payload.userId,
       );
+
       //store chat message
       const room = await this.roomModel.findOneAndUpdate(
-        { _id: message.roomId },
+        { _id: payload.roomId },
         {
           $push: {
             messages: {
               userId: user.userId,
-              content: message.msgText,
+              content: payload.message,
               createdAt: new Date(),
             },
           },
         },
       );
-      // console.log(`room data `, user.name);
+
       this.server
         .to(room.name)
-        .emit('message', formatMessage(user.name, message.msgText));
+        .emit('message', formatMessage(user.name, payload.message));
     } catch (err) {
-      console.log(err);
+      this.logger.error(
+        `Event: chatToServer, Error: [${err.message}]`,
+        err.stack,
+      );
     }
   }
 
-  @SubscribeMessage('leaveRoomByInterface')
-  async leaveRoomByInterface(client: Socket, data) {
+  @SubscribeMessage('leaveRoom')
+  async leaveRoom(client: Socket, data) {
     try {
       const room = await this.roomModel.findOne({ _id: data.roomId });
-      const connectedUser = room.connectedUsers;
-
-      const userIndex = connectedUser.findIndex(
-        (element) => element.userId === data.userId,
+      const userIndex = room.connectedUsers.findIndex(
+        (connectedUser) => connectedUser.userId === data.userId,
       );
-      const userLeft = room.connectedUsers.splice(userIndex, 1);
+
+      const [userLeft] = room.connectedUsers.splice(userIndex, 1);
       await this.roomModel.findOneAndUpdate({ _id: data.roomId }, room);
       client.leave(room.name);
 
@@ -127,20 +132,12 @@ export class ChatGateway {
         .to(room.name)
         .emit(
           'message',
-          formatMessage(
-            userLeft[0].name,
-            `${userLeft[0].name} has left the chat.`,
-          ),
+          formatMessage(userLeft.name, `${userLeft.name} has left the chat.`),
         );
+
       client.emit('redirect', '/');
-    } catch (err) {}
+    } catch (err) {
+      this.logger.error(`Event: leaveRoom, Error: [${err.message}]`, err.stack);
+    }
   }
 }
-const formatMessage = (name, content) => {
-  const createdAt = utc().toDate();
-  return {
-    name,
-    content,
-    createdAt,
-  };
-};

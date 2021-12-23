@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ChatGateway } from './chat.gateway';
 import { mongooseConfiguration } from './database/mongoDB/config/mongoose.config';
-import { RoomModule } from './room/room.module';
+import { ChatRoomModule } from './api/room/chat-room.module';
 import { Room, RoomSchema } from './database/mongoDB/schemas/room.schema';
 
 @Module({
@@ -12,7 +12,7 @@ import { Room, RoomSchema } from './database/mongoDB/schemas/room.schema';
       mongooseConfiguration().options,
     ),
     MongooseModule.forFeature([{ name: Room.name, schema: RoomSchema }]),
-    RoomModule,
+    ChatRoomModule,
   ],
   providers: [ChatGateway],
 })

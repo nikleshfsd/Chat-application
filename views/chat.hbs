@@ -12,6 +12,7 @@
   <div class="chat-container">
     <header class="chat-header">
       <h1><i class="fas fa-smile"></i> Chat Room</h1>
+      <span>Room Name:&nbsp;&nbsp; {{ roomName }}</span>
       <a id="leaveChat" class="btn">Leave Room</a>
     </header>
     <main class="chat-main">
@@ -51,8 +52,8 @@
     // Prevent from to submit
     event.preventDefault();
 
-    const msgText = event.target.elements.message.value;
-    socket.emit('chatMsgText', { userId, roomId, msgText });
+    const message = event.target.elements.message.value;
+    socket.emit('chatToServer', { userId, roomId, message });
 
     // Empty message field
     event.target.elements.message.value = '';
@@ -66,7 +67,7 @@
   document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('leaveChat').onclick = () => {
-      socket.emit('leaveRoomByInterface', { userId, roomId });
+      socket.emit('leaveRoom', { userId, roomId });
     };
     // });
   });
@@ -80,7 +81,7 @@
   function formatDomMessage(message) {
     const div = document.createElement('div');
     div.classList.add('receivedMessage');
-    div.innerHTML = `<p>${message.name} <br> ${message.content}<br><span>${moment.utc(message.createdAt)..format("hh:mm A")}</span></p>`;
+    div.innerHTML = `<p>${message.name} <br> ${message.content}<br><span>${moment.utc(message.createdAt).local().format("hh:mm A")}</span></p><br><br>`;
     document.querySelector('#chat-window').appendChild(div);
   }
 </script>
