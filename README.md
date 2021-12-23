@@ -1,73 +1,84 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+<h2 class="code-line" data-line-start=0 data-line-end=1 ><a id="Chat_Application_with_NestJs_and_Websocket_0"></a>Chat Application with NestJs and Websocket</h2>
+<p class="has-line-data" data-line-start="3" data-line-end="4">User can create public room and chat with other users in that room.</p>
+<h2 class="code-line" data-line-start=5 data-line-end=6 ><a id="Installation_5"></a>Installation</h2>
+<pre><code class="has-line-data" data-line-start="8" data-line-end="10" class="language-bash">npm install
+</code></pre>
+<h2 class="code-line" data-line-start=11 data-line-end=12 ><a id="Running_the_app_11"></a>Running the app</h2>
+<pre><code class="has-line-data" data-line-start="14" data-line-end="20" class="language-bash"><span class="hljs-comment"># development</span>
+npm run start
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<span class="hljs-comment"># watch mode</span>
+npm run start:dev
+</code></pre>
+<h2 class="code-line" data-line-start=21 data-line-end=22 ><a id="Required_packages_21"></a>Required packages</h2>
+<pre><code class="has-line-data" data-line-start="24" data-line-end="27" class="language-shell">npm i --save @nestjs/websockets @nestjs/platform-socket.io ngx-socket-io
+npm i --save-dev @types/socket.io
+</code></pre>
+<h2 class="code-line" data-line-start=29 data-line-end=30 ><a id="APIs_29"></a>APIs</h2>
+<ul>
+<li class="has-line-data" data-line-start="31" data-line-end="47">
+<h3 class="code-line" data-line-start=31 data-line-end=32 ><a id="Create_room_31"></a>Create room:</h3>
+<h4 class="code-line" data-line-start=33 data-line-end=34 ><a id="Resource_33"></a>Resource:</h4>
+<pre><code>  /chat-room/join
+</code></pre>
+<h4 class="code-line" data-line-start=36 data-line-end=37 ><a id="Request_36"></a>Request:</h4>
+<pre><code>  name: (room name)
+  connectedUser: the username with creats the room
+</code></pre>
+<h4 class="code-line" data-line-start=39 data-line-end=40 ><a id="Response_39"></a>Response:</h4>
+<pre><code>  User will be redirected to respective room.
+</code></pre>
+<h4 class="code-line" data-line-start=42 data-line-end=43 ><a id="Example_42"></a>Example:</h4>
+<pre><code class="has-line-data" data-line-start="44" data-line-end="47" class="language-shell">curl --location --request POST 'http://localhost:3000/chat-room/join' \
+--form 'name=&quot;Node&quot;' \
+--form 'connectUser=&quot;Neha&quot;'
+</code></pre>
+</li>
+</ul>
+<h2 class="code-line" data-line-start=47 data-line-end=48 ><a id="Web_Socket_Gateway_47"></a>Web Socket Gateway</h2>
+<ul>
+<li class="has-line-data" data-line-start="50" data-line-end="97">
+<h3 class="code-line" data-line-start=50 data-line-end=51 ><a id="Events_50"></a>Events:</h3>
+<p class="has-line-data" data-line-start="51" data-line-end="52">we are having mainly following events:</p>
+<h2 class="code-line" data-line-start=53 data-line-end=54 ><a id="JoinRoom_53"></a><code>JoinRoom</code></h2>
+<pre><code>  Payload: 
+   { 
+          roomId : string;
+          UserId : string;
+  }
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+At the time user will join the room this event will be emitted from the client side with request body.
+</code></pre>
+<h2 class="code-line" data-line-start=63 data-line-end=64 ><a id="ChatToServer_63"></a><code>ChatToServer</code></h2>
+<pre><code> Payload: 
+  { 
+      roomId : string;
+      userId : string;
+      message : string;
+  }
+  
+   This event will be emitted from client side when the user 
+   will send the message in the room.
+</code></pre>
+<h2 class="code-line" data-line-start=75 data-line-end=76 ><a id="LeaveRoom_75"></a><code>LeaveRoom</code></h2>
+<pre><code>Payload: 
+  { 
+      roomId : string;
+      userId : string;
+      message : string;
+  }
 
-## Description
+When the user want to exit from the room this event will be emitted from client side with request body.
+</code></pre>
+<h2 class="code-line" data-line-start=86 data-line-end=87 ><a id="Message_86"></a><code>Message</code></h2>
+<pre><code>Payload: 
+  { 
+      name : string;
+      content : string;
+      createdAt : timestamp;
+  }
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+This event will be listen by client side when message will be emitted from server.
+</code></pre>
+</li>
+</ul>
