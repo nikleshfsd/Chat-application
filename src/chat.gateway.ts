@@ -10,6 +10,7 @@ import { Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { formatMessage } from './utils';
 import { ChatToServerPayload, JoinRoomPayload } from './types';
+import { utc } from 'moment';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
@@ -32,20 +33,20 @@ export class ChatGateway {
       'room.connectedUser.socketId ': socketId,
     });
 
+    if (!room) return;
+
     const user = room.connectedUsers.find(
       (element) => element.socketId === socketId,
     );
 
-    if (!user || !room) {
-      return;
-    }
+    if (!user) return;
 
     await this.roomModel.findOneAndUpdate(
-      { 'room.connectedUser.socketId ': socketId },
+      { 'room.connectedUsers.socketId ': socketId },
       {
         $pull: {
-          connectedUser: {
-            socketId: socketId,
+          connectedUsers: {
+            socketId,
           },
         },
       },
@@ -103,7 +104,7 @@ export class ChatGateway {
             messages: {
               userId: user.userId,
               content: payload.message,
-              createdAt: new Date(),
+              createdAt: utc().toDate(),
             },
           },
         },
