@@ -1,5 +1,4 @@
 import {
-  MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -10,6 +9,7 @@ import { Room } from './database/mongoDB/schemas/room.schema';
 import { Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { formatMessage } from './utils';
+import { ChatToServerPayload, JoinRoomPayload } from './types';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
@@ -60,16 +60,21 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('joinRoom')
-  async joinRoom(client: Socket, { userId, roomId }) {
-    const room = await this.roomModel.findOne({ _id: roomId });
+  async joinRoom(client: Socket, payload: JoinRoomPayload) {
+    const room = await this.roomModel.findOne({ _id: payload.roomId });
 
+    // when the chat room does not exists.
     if (!room) return;
 
-    const user = room.connectedUsers.find((user) => user.userId === userId);
+    const user = room.connectedUsers.find(
+      (user) => user.userId === payload.userId,
+    );
+
+    // when the given user id does not exists.
     if (!user) return;
 
     user.socketId = client.id;
-    await this.roomModel.findOneAndUpdate({ _id: roomId }, room);
+    await this.roomModel.findOneAndUpdate({ _id: payload.roomId }, room);
 
     client.join(room.name);
 
@@ -84,14 +89,13 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('chatToServer')
-  async chatToServer(_: Socket, payload) {
+  async chatToServer(_: Socket, payload: ChatToServerPayload) {
     try {
       const roomchat = await this.roomModel.findOne({ _id: payload.roomId });
       const user = roomchat.connectedUsers.find(
         (user) => user.userId === payload.userId,
       );
 
-      //store chat message
       const room = await this.roomModel.findOneAndUpdate(
         { _id: payload.roomId },
         {

@@ -4,6 +4,7 @@ import { JoinRoomDto } from './dto/join-room.dto';
 import { Room } from '../../database/mongoDB/schemas/room.schema';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
+import { JoinRoomResponse } from '../../../src/types';
 
 @Injectable()
 export class ChatRoomService {
@@ -11,30 +12,36 @@ export class ChatRoomService {
     @InjectModel(Room.name) private readonly roomModel: Model<Room>,
   ) {}
 
-  async joinRoom(joinRoomDto: JoinRoomDto) {
+  async joinRoom(joinRoomDto: JoinRoomDto): Promise<JoinRoomResponse> {
     const roomSchema = new Room();
     roomSchema.name = joinRoomDto.name;
 
     const userName = joinRoomDto.connectedUser;
     const userId = uuidv4();
-    const room = await this.roomModel.findOne({
+
+    let room = await this.roomModel.findOne({
       name: joinRoomDto.name,
     });
 
     if (!room) {
       const roomSchema = new Room();
       roomSchema.name = joinRoomDto.name;
-      roomSchema.connectedUsers = [{ name: userName, userId, socketId: null }];
-      const { _id: roomId } = await this.roomModel.create(roomSchema);
-      return { roomId, userId };
-    } else {
-      const connectedUsers = [{ name: userName, userId, socketId: null }];
-      const { _id: roomId } = await this.roomModel.findOneAndUpdate(
-        { name: joinRoomDto.name },
-        { $push: { connectedUsers } },
-      );
-
-      return { roomId, userId, roomName: joinRoomDto.name };
+      roomSchema.messages = [];
+      room = await this.roomModel.create(roomSchema);
     }
+
+    const connectedUsers = [{ name: userName, userId, socketId: null }];
+    room = await this.roomModel.findOneAndUpdate(
+      { name: joinRoomDto.name },
+      { $push: { connectedUsers } },
+    );
+
+    const joinRoomResponse: JoinRoomResponse = {
+      roomId: room._id,
+      userId,
+      roomName: joinRoomDto.name,
+    };
+
+    return joinRoomResponse;
   }
 }
