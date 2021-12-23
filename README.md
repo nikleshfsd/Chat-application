@@ -10,10 +10,14 @@ npm run start
 <span class="hljs-comment"># watch mode</span>
 npm run start:dev
 </code></pre>
-<h2 class="code-line" data-line-start=21 data-line-end=22 ><a id="Packages_Added_21"></a>Packages Added</h2>
-<pre><code class="has-line-data" data-line-start="24" data-line-end="27" class="language-shell">[@nestjs/platform-socket.io](https://www.npmjs.com/package/@nestjs/platform-socket.io)
-[socket.io](https://www.npmjs.com/package/socket.io)
-</code></pre>
+
+<h2 class="code-line" data-line-start=21 data-line-end=22 ><a id="Packages_Added_21"></a>Packages Used</h2>
+<ul>
+<li><a href="https://www.npmjs.com/package/mongoose">Mongoose</a></li>
+<li><a href="https://www.npmjs.com/package/socket.io">Socket.io</a></li>
+<li><a href="https://www.npmjs.com/package/moment">Moment</a></li>
+</ul>
+
 <h2 class="code-line" data-line-start=28 data-line-end=29 ><a id="APIs_28"></a>APIs</h2>
 <ul>
 <li class="has-line-data" data-line-start="30" data-line-end="46">
@@ -46,10 +50,9 @@ npm run start:dev
           roomId : string;
           UserId : string;
   }
+<br>
+when user will join the room this event will be emitted from the client side with payload.</code></pre>
 
-
-when user will join the room this event will be emitted from the client side with payload.
-</code></pre>
 <h2 class="code-line" data-line-start=62 data-line-end=63 ><a id="ChatToServer_62"></a><code>ChatToServer</code></h2>
 <pre><code> Payload: 
   { 
@@ -57,7 +60,7 @@ when user will join the room this event will be emitted from the client side wit
       userId : string;
       message : string;
   }
-  
+  <br>
   
    This event will be emitted from client side when the user 
    will send the message in the room with request payload.
@@ -69,10 +72,10 @@ when user will join the room this event will be emitted from the client side wit
       userId : string;
       message : string;
   }
-
-
+<br>
 When the user leave the room this event will be emitted from client side with requested payload.
 </code></pre>
+
 <h2 class="code-line" data-line-start=85 data-line-end=86 ><a id="Message_85"></a><code>Message</code></h2>
 <pre><code>Payload: 
   { 
@@ -80,10 +83,10 @@ When the user leave the room this event will be emitted from client side with re
       content : string;
       createdAt : timestamp;
   }
-
-
+<br>
 This event will be listent by client side when message will be emitted from server.
 </code></pre>
+
 </li>
 <li class="has-line-data" data-line-start="96" data-line-end="99">
 <h3 class="code-line" data-line-start=96 data-line-end=97 ><a id="License_96"></a>License:</h3>
