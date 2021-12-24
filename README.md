@@ -86,7 +86,11 @@ To implement the client for this chat you can use the below mention events.
 
 ## Screenshots
 
-  ![Chat Application](/screenshots/Screenshot_create.png)
+  ![Join Room](/screenshots/join-chat-room.png)
+
+
+  ![Chat Room](/screenshots/chat-room.png)
+
 
 ## License
 
