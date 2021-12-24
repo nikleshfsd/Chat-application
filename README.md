@@ -2,26 +2,18 @@
 <p class="has-line-data" data-line-start="3" data-line-end="4">User can create public room and chat with other users in that room.</p>
  <h2 class="code-line" data-line-start=21 data-line-end=22 ><a id="Prerequisite_Added_21"></a>Prerequisite</h2>
 <ul>
-<li>Node js</li>
-<li>Nest js</li>
-<li>Mongo db</li>
+<li>Docker</li>
+<li>Docker Composer</li>
 </ul>
 
 <h2 class="code-line" data-line-start=21 data-line-end=22 ><a id="Prerequisite_Added_21"></a>Configuration details</h2>
 
 <p class="has-line-data" data-line-start="3" data-line-end="4">User need to create .env file on root folder and paste the content from .env.sample file </p>
 
-<h2 class="code-line" data-line-start=5 data-line-end=6 ><a id="Installation_5"></a>Installation</h2>
-<pre><code class="has-line-data" data-line-start="8" data-line-end="10" class="language-bash">npm install
-</code></pre>
-<h2 class="code-line" data-line-start=11 data-line-end=12 ><a id="Running_the_app_11"></a>Running the app</h2>
+<h2 class="code-line" data-line-start=11 data-line-end=12 ><a id="Running_the_app_11"></a>Running app with docker</h2>
 <pre><code class="has-line-data" data-line-start="14" data-line-end="20" class="language-bash"><span class="hljs-comment"># development</span>
-npm run start
-
-<span class="hljs-comment"># watch mode</span>
-npm run start:dev
-</code></pre>
-
+docker-compose up --build
+docker-compose up -d --build
 <h2 class="code-line" data-line-start=21 data-line-end=22 ><a id="Packages_Added_21"></a>Packages Used</h2>
 <ul>
 <li><a href="https://www.npmjs.com/package/mongoose">Mongoose</a></li>
