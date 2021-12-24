@@ -7,6 +7,10 @@
 
 Chat Application is a system which is used to develop public room where people can come and chat with each other.
 
+## What we want to achieve
+  - Ability to create public chat-room where people can come together and share their thoughts.
+  - Where user can also join the existing room and interact to other members.
+  - They can also leave the room at any time if they want.
 
 ## Prerequisite
    - [Docker](https://www.docker.com/)
