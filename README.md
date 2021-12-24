@@ -7,6 +7,7 @@
 
 Chat Application is a system which is used to develop public room where people can come and chat with each other.
 
+
 ## Prerequisite
    - [Docker](https://www.docker.com/)
    - [Docker Compose](https://docs.docker.com/compose/)
@@ -19,12 +20,26 @@ You will be required to create an environment file and add the content in it (Si
 .env
 ```
 
-## Running app with docker
+## Running app with Docker
 
 ```bash
-$ docker-compose build # it will build the images from Dockerfile
-$ docker-compose up # start the application using docker container
-$ docker-compose up -d # start the application using docker container in the background
+$ docker-compose up -d --build
+```
+
+## Installation
+
+```bash
+$ npm i
+```
+
+## Running the app
+
+```bash
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
 ```
 
 ## APIs
@@ -92,6 +107,6 @@ To implement the client for this chat you can use the below mention events.
   ![Chat Room](/screenshots/chat-room.jpg)
 
 
-## License
-
-Chat Application is [MIT licensed](LICENSE).
+## Further Improvements
+  - End-to-end Encryption
+  - Message Delay and Unavailability

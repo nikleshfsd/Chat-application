@@ -4,11 +4,11 @@ RUN mkdir -p /app
 
 WORKDIR /app
 
-# COPY package.json ./
-
 COPY . .
 
 RUN rm -rf node_modules
+
+RUN [ -f .env ] || cp .env.sample .env
 
 RUN npm i
 
