@@ -84,6 +84,10 @@ To implement the client for this chat you can use the below mention events.
     This event will be listent by client side when message will be emitted from server.
     ```
 
+## Screenshots
+
+  ![Chat Application](/screenshots/Screenshot_create.png)
+
 ## License
 
 Chat Application is [MIT licensed](LICENSE).
