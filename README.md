@@ -2,8 +2,8 @@
 <p class="has-line-data" data-line-start="3" data-line-end="4">User can create public room and chat with other users in that room.</p>
  <h2 class="code-line" data-line-start=21 data-line-end=22 ><a id="Prerequisite_Added_21"></a>Prerequisite</h2>
 <ul>
-<li>Docker</li>
-<li>Docker Composer</li>
+<li><a href="https://www.docker.com/">Docker</a></li>
+<li><a href="https://docs.docker.com/compose/">Docker Composer</a></li>
 </ul>
 
 <h2 class="code-line" data-line-start=21 data-line-end=22 ><a id="Prerequisite_Added_21"></a>Configuration details</h2>
@@ -23,7 +23,7 @@ docker-compose up -d --build
 
 <h2 class="code-line" data-line-start=28 data-line-end=29 ><a id="APIs_28"></a>APIs</h2>
 <ul>
-<li><a href="https://www.postman.com/collections/f87fb8f47e93335fdee6">Postman collection</a></li>
+<li><a href="https://www.postman.com/collections/a5275392c811617ac43a">Postman collection</a></li>
 </ul>
 <h2 class="code-line" data-line-start=46 data-line-end=47 ><a id="Web_Socket_Gateway_46"></a>Web Socket Gateway</h2>
 <ul>
@@ -76,7 +76,7 @@ This event will be listent by client side when message will be emitted from serv
 </ul>
 <h2 class="code-line" data-line-start=61 data-line-end=62 ><a id="Screenshots_61"></a>Screenshots</h2>
 <p>
-![Screenshot_chat](Screenshot_create.png)
+![Screenshot_chat](screenshots/Screenshot_create.png)
 </p>
 <ul>
 <li class="has-line-data" data-line-start="96" data-line-end="99">
@@ -84,4 +84,3 @@ This event will be listent by client side when message will be emitted from serv
 <p class="has-line-data" data-line-start="97" data-line-end="98">Pypestream-chat-room is MIT licensed.</p>
 </li>
 </ul>
-
