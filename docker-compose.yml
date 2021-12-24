@@ -1,0 +1,24 @@
+version: "3.5"
+
+volumes:
+  mongo-data:
+services:
+  mongo:
+    image: mongo:4.0
+    ports:
+      - 27018:27017
+    volumes:
+      - mongo-data:/data/db
+    restart: always
+
+  backend:
+    build:
+      context: .
+    command: [ 'npm', 'run', 'start' ]
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    restart: always
+    depends_on:
+      - mongo
