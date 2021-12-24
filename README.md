@@ -86,10 +86,10 @@ To implement the client for this chat you can use the below mention events.
 
 ## Screenshots
 
-  ![Join Room](/screenshots/join-chat-room.png)
+  ![Join Room](/screenshots/join-room.jpg)
 
 
-  ![Chat Room](/screenshots/chat-room.png)
+  ![Chat Room](/screenshots/chat-room.jpg)
 
 
 ## License
