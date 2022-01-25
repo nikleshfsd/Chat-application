@@ -8,7 +8,6 @@ export class ChatRoomController {
   constructor(private readonly chatRoomService: ChatRoomService) {}
 
   @Post('join')
-  @Render('chat')
   async joinRoom(@Body() joinRoomDto: JoinRoomDto) {
     return this.chatRoomService.joinRoom(joinRoomDto);
   }

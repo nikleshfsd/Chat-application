@@ -1,13 +1,16 @@
 import { utc } from 'moment';
 
 export const formatMessage = (
+  id: string,
   name: string,
   content: string,
-): { name: string; content: string; createdAt: Date } => {
+): { id: string; name: string; content: string; createdAt: Date } => {
   const createdAt = utc().toDate();
   return {
+    id,
     name,
     content,
     createdAt,
   };
 };
+

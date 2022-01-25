@@ -33,8 +33,9 @@ export class ChatGateway {
 
   async handleDisconnect(client: Socket) {
     const socketId = client.id;
+
     const room = await this.roomModel.findOne({
-      'room.connectedUser.socketId ': socketId,
+      'connectedUsers.socketId': socketId,
     });
 
     if (!room) return;
@@ -45,8 +46,8 @@ export class ChatGateway {
 
     if (!user) return;
 
-    await this.roomModel.findOneAndUpdate(
-      { 'room.connectedUsers.socketId ': socketId },
+    const updateData = await this.roomModel.findOneAndUpdate(
+      { 'connectedUsers.socketId': socketId },
       {
         $pull: {
           connectedUsers: {
@@ -54,13 +55,14 @@ export class ChatGateway {
           },
         },
       },
+      { new: true },
     );
 
     this.server
       .to(room.name)
       .emit(
         'message',
-        formatMessage(user.name, `${user.name} has left the chat.`),
+        formatMessage('bot', 'Admin', `${user.name} has left the chat.`),
       );
   }
 
@@ -85,12 +87,12 @@ export class ChatGateway {
 
     client.emit(
       'message',
-      formatMessage(user.name, `Welcome ${user.name} in PYPESTREAM chat.`),
+      formatMessage('bot', 'Admin', `Welcome ${user.name} in PYPESTREAM chat.`),
     );
 
     client
       .to(room.name)
-      .emit('message', formatMessage(user.name, `${user.name} Joined.`));
+      .emit('message', formatMessage('bot', 'Admin', `${user.name} Joined.`));
   }
 
   @SubscribeMessage('chatToServer')
@@ -116,7 +118,10 @@ export class ChatGateway {
 
       this.server
         .to(room.name)
-        .emit('message', formatMessage(user.name, payload.message));
+        .emit(
+          'message',
+          formatMessage(user.userId, user.name, payload.message),
+        );
     } catch (err) {
       this.logger.error(
         `Event: chatToServer, Error: [${err.message}]`,
@@ -141,10 +146,9 @@ export class ChatGateway {
         .to(room.name)
         .emit(
           'message',
-          formatMessage(userLeft.name, `${userLeft.name} has left the chat.`),
+          formatMessage('bot', 'Admin', `${userLeft.name} has left the chat.`),
         );
 
-      client.emit('redirect', '/');
     } catch (err) {
       this.logger.error(`Event: leaveRoom, Error: [${err.message}]`, err.stack);
     }
