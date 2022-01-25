@@ -1,0 +1,17 @@
+.largeWidthButton {
+  margin: 40px 50px 0 50px;
+  width: 408px;
+  height: 35px;
+  color: #5285f2;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.smallWidthButton {
+  margin: auto 10px;
+  width: 140px;
+  height: 25px;
+  color: #5285f2;
+  font-size: 16px;
+  font-weight: 800;
+}

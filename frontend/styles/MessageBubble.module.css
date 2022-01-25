@@ -1,0 +1,89 @@
+.nonUserMessageContainer {
+  display: flex;
+  flex-direction: column;
+	margin: 2px;
+}
+
+.messageContainer {
+	float: right;
+	display: flex;
+	flex-direction: column;
+}
+
+.nonUsername {
+  color: black;
+  font-size: 13px;
+	float: right;
+	margin: 0 auto 0 4px;
+}
+
+.username {
+  color: black;
+  font-size: 13px;
+	margin: 0 10px 0 auto;
+	display: flex;
+	flex-direction: row-reverse;
+
+}
+
+.nonUserMessageDateContainer {
+  width: max-content;
+  max-width: calc(100% - 30px);
+	height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.messageDateContainer {
+  width: max-content;
+  max-width: calc(100% - 30px);
+	margin: 2px 4px 2px auto;
+	height: auto;
+  display: flex;
+  flex-direction: column;
+	float: right;
+}
+
+.nonUserChatMessage {
+  margin: 2px 5px;
+  padding: 14px;
+  color: black;
+  background-color: #a4a3e9;
+  font-size: 16px;
+  border-radius: 0 12px 12px 12px;
+  float: left;
+  position: relative;
+}
+
+.userChatMessage {
+  margin: 2px 5px;
+  padding: 14px;
+  color: white;
+  background-color: #1c1a91;
+  font-size: 16px;
+  border-radius: 12px 0 12px 12px;
+  float: right;
+  position: relative;
+}
+
+.nonUserDate {
+  position: relative;
+  bottom: 0;
+  float: right;
+  display: flex;
+  flex-direction: row-reverse;
+  color: blue;
+  margin: 2px;
+  font-size: 10px;
+}
+
+.userDate {
+  position: relative;
+  bottom: 0;
+  float: left;
+  display: flex;
+  flex-direction: row;
+  color: blue;
+  margin: 2px;
+  font-size: 10px;
+}

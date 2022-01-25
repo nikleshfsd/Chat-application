@@ -13,10 +13,20 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./backend
     command: [ 'npm', 'run', 'start' ]
     ports:
       - 3000:3000
     restart: always
     depends_on:
       - mongo
+
+  frontend:
+    build:
+      context: ./frontend
+    command: [ 'npm', 'run', 'dev' ]
+    ports:
+      - 3005:3005
+    restart: always
+    depends_on:
+      - backend

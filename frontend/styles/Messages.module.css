@@ -1,0 +1,4 @@
+.messagesDivContainer {
+    display: flex;
+    flex-direction: column;
+}

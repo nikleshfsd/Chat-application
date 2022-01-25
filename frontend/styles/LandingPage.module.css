@@ -1,0 +1,50 @@
+.outerBox {
+  width: 500px;
+  height: 400px;
+  background-color: #486cb9;
+  border-radius: 15px;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.innerTopBox {
+  width: 500px;
+  height: 100px;
+  background-color: #0147df;   
+  border-radius: 15px 15px 0 0;
+	margin: auto;
+}
+
+.iconTextContainer {
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: auto 125px;
+}
+
+.innerBottomBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.headText{
+	color: white;
+  margin: auto;
+}
+
+.smileIcon {
+  height: 65px;
+  width: 65px;
+  margin:auto;
+}
+
+.text {
+  color: white;
+  font-size: medium;
+  margin: 30px 0 0 50px;
+}

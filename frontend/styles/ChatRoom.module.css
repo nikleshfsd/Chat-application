@@ -1,0 +1,81 @@
+.chatRoomContainer {
+  width: calc(100vw - 180px);
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.Header {
+  width: 100%;
+  height: 55px;
+  background-color: #0352fc;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.chatRoomText {
+  color: white;
+  font-size: 18px;
+  margin: auto 10px;
+  font-weight: 700;
+}
+
+.roomName {
+  color: white;
+  font-size: 16px;
+  margin: auto 10px;
+  font-weight: 900;
+  font-size: 25px;
+}
+
+.closeIcon {
+	height: 40px;
+	width: 40px;
+	margin: auto 8px auto 0;
+}
+
+.chatMessageContainer {
+  width: 100%;
+  height: 450px;
+  background-color: white;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatMessageContainer::-webkit-scrollbar {
+  width: 10px;
+}
+
+.chatMessageContainer::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 3px;
+}
+
+.chatMessageContainer::-webkit-scrollbar-thumb {
+  background: #4d7a85; 
+  border-radius: 3px;
+}
+
+.chatMessageContainer::-webkit-scrollbar-thumb:hover {
+  background: #5151f7; 
+}
+
+.messageSendContainer {
+  width: 100%;
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  background-color: #5285f2;
+  padding: 0 0 0 5px;
+}
+
+.sendIcon {
+	height: 40px;
+	width: 40px;
+	margin: auto 16px auto 0;
+}
